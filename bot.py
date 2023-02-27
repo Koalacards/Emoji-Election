@@ -10,6 +10,7 @@ class EmojiElectionClient(commands.Bot):
 
     async def setup_hook(self) -> None:
         await client.load_extension('cogs.server_setup')
+        await client.load_extension('cogs.nomination')
         await self.tree.sync()
 
     async def on_ready(self):

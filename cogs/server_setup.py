@@ -14,7 +14,8 @@ class ServerSetup(commands.Cog):
     @app_commands.describe(election_channel="Which channel in your server you want to have emoji elections in?")
     @app_commands.default_permissions(manage_guild = True)
     async def set_election_channel(self, interaction:discord.Interaction, election_channel:discord.TextChannel):
-        """Set the channel in your server you will have emoji elections in. This must be set before users can nominate emojis."""
+        """Set the channel in your server you will have emoji elections in. If this channel is not set, then the preview channel
+         will be used and any yes's in the preview channel will be automatically added as emojis."""
         election_channel_id = election_channel.id
         set_election_channel_id(interaction.guild_id, election_channel_id)
         embed = create_embed("Election Channel Set Successfully", "", discord.Color.green())
