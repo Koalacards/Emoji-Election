@@ -22,7 +22,7 @@ class Nomination(commands.Cog):
             embed=nomination_embed(interaction, name)
             embed.set_image(url=emoji.url)
             await preview_channel.send(embed=embed)
-            await send(interaction, embed=nomination_success_embed(), view=url_view)
+            await send(interaction, embed=nomination_success_embed(), view=url_view, ephemeral=True)
         else:
             election_channel_id = get_election_channel_id(interaction.guild_id)
             if election_channel_id:
@@ -30,13 +30,13 @@ class Nomination(commands.Cog):
                 embed=nomination_embed(interaction, name)
                 embed.set_image(url=emoji.url)
                 await election_channel.send(embed=embed)
-                await send(interaction, embed=nomination_success_embed(preview_channel=False), view=url_view)
+                await send(interaction, embed=nomination_success_embed(preview_channel=False), view=url_view, ephemeral=True)
             else:
                 title="Nomination Error"
                 description="Either the election or preview channel needs to be set before nominating emojis. \
                  A user with `Manage Server` permissions must use either the `set-election-channel` or `set-preview-channel` commands."
                 colour = discord.Colour.red()
-                await send(interaction, create_embed(title, description, colour), url_view)
+                await send(interaction, create_embed(title, description, colour), url_view, ephemeral=True)
         
 
 
