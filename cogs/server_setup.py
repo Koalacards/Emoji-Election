@@ -2,8 +2,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from db.dbfunc import set_election_channel_id, set_preview_channel_id
-from utils import create_embed, send
+from db.dbfunc import (get_banned_list_as_str, set_banned_list_str,
+                       set_election_channel_id, set_preview_channel_id)
+from utils import create_embed, send, str_to_list
 from views import url_view
 
 
@@ -45,6 +46,66 @@ class ServerSetup(commands.Cog):
             "Preview Channel Set Successfully", "", discord.Color.green()
         )
         await send(interaction, embed, url_view)
+
+    @app_commands.command(name="ban")
+    @app_commands.describe(user="User to ban.")
+    @app_commands.default_permissions(manage_guild=True)
+    async def ban(self, interaction: discord.Interaction, user: discord.User):
+        """Ban a member from nominating emojis in your server."""
+        ban_list = str_to_list(get_banned_list_as_str(interaction.guild_id))
+        if user.id in ban_list:
+            await send(
+                interaction,
+                create_embed(
+                    "Error", f"User {user.name} is already banned.", discord.Color.red()
+                ),
+                view=url_view,
+                ephemeral=True,
+            )
+        else:
+            ban_list.append(user.id)
+            set_banned_list_str(interaction.guild_id, str(ban_list))
+            await send(
+                interaction,
+                create_embed(
+                    "Success",
+                    f"User {user.name} banned successfully!",
+                    discord.Color.green(),
+                ),
+                view=url_view,
+                ephemeral=True,
+            )
+
+    @app_commands.command(name="unban")
+    @app_commands.describe(user="User to unban.")
+    @app_commands.default_permissions(manage_guild=True)
+    async def unban(self, interaction: discord.Interaction, user: discord.User):
+        """Unban a member from nominating emojis in your server."""
+        ban_list = str_to_list(get_banned_list_as_str(interaction.guild_id))
+        if user.id not in ban_list:
+            await send(
+                interaction,
+                create_embed(
+                    "Error",
+                    f"User {user.name} is already unbanned.",
+                    discord.Color.red(),
+                ),
+                view=url_view,
+                ephemeral=True,
+            )
+        else:
+            ban_list.remove(user.id)
+            set_banned_list_str(interaction.guild_id, str(ban_list))
+            await send(
+                interaction,
+                create_embed(
+                    "Success",
+                    f"User {user.name} unbanned successfully!",
+                    discord.Color.green(),
+                ),
+                view=url_view,
+                ephemeral=True,
+            )
 
 
 async def setup(client):

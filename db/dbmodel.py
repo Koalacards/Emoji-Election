@@ -14,6 +14,7 @@ class BaseModel(Model):
 
 
 class ServerConfig(BaseModel):
+    banned_list = TextField(null=True)
     election_channel_id = IntegerField(null=True)
     guild_id = IntegerField(null=True)
     preview_channel_id = IntegerField(null=True)

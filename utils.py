@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 import discord
@@ -20,3 +21,8 @@ async def send(
         )
     else:
         await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
+
+
+def str_to_list(list_as_str: str) -> list:
+    json_compatible = list_as_str.replace("'", '"')
+    return json.loads(json_compatible)

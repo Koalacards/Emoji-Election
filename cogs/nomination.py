@@ -2,9 +2,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from db.dbfunc import get_election_channel_id, get_preview_channel_id
+from db.dbfunc import (get_banned_list_as_str, get_election_channel_id,
+                       get_preview_channel_id)
 from persistent_views import ElectionView, PreviewView
-from utils import create_embed, send
+from utils import create_embed, send, str_to_list
 from views import url_view
 
 
@@ -24,6 +25,21 @@ class Nomination(commands.Cog):
         name: str,
     ):
         """Nominate an image or gif that should be added to this server!"""
+        #TODO: Figure out exact size limits(256 kb for images, ??? for gifs)
+        '''
+        if attachment.size > 33554432:
+            await send(
+                interaction,
+                create_embed(
+                    "Error",
+                    "Your attachment exceeds the 32 MB limit for bot uploads on discord :( Please shrink your attachment and try again.",
+                    discord.Color.red(),
+                ),
+                view=url_view,
+                ephemeral=True,
+            )
+            return
+        '''
         await nomination_logic(self.client, interaction, attachment.url, name)
 
 
@@ -31,6 +47,19 @@ async def nomination_logic(
     client: commands.Bot, interaction: discord.Interaction, image_url: str, name: str
 ):
     """Handles the concurrent logic between nomination commands."""
+    ban_list = str_to_list(get_banned_list_as_str(interaction.guild_id))
+    if interaction.user.id in ban_list:
+        await send(
+            interaction,
+            create_embed(
+                "Error",
+                "You are banned from nominating emojis in this server. Reach out to a moderator for more information.",
+                discord.Color.red(),
+            ),
+            view=url_view,
+            ephemeral=True,
+        )
+        return
     preview_channel_id = get_preview_channel_id(interaction.guild_id)
     if preview_channel_id:
         preview_channel = client.get_channel(preview_channel_id)

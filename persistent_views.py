@@ -46,7 +46,6 @@ class PreviewDropdown(Select):
                     "You must have `Manage Server` or `Administrator` permissions to select an action.",
                     discord.Color.red(),
                 ),
-                view=url_view,
                 ephemeral=True,
             )
             return
@@ -135,7 +134,6 @@ class ElectionDropdown(Select):
                     "You must have `Manage Server` or `Administrator` permissions to select an action.",
                     discord.Color.red(),
                 ),
-                view=url_view,
                 ephemeral=True,
             )
             return
@@ -149,7 +147,9 @@ class ElectionDropdown(Select):
 
         option_chosen = self.values[0]
         if option_chosen == "Approve Nomination":
+            print(message_embed.image.url)
             img_bytes = requests.get(message_embed.image.url).content
+            print(len(img_bytes))
             await interaction.guild.create_custom_emoji(
                 name=emoji_name, image=img_bytes
             )
