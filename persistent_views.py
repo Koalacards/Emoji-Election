@@ -147,9 +147,7 @@ class ElectionDropdown(Select):
 
         option_chosen = self.values[0]
         if option_chosen == "Approve Nomination":
-            print(message_embed.image.url)
             img_bytes = requests.get(message_embed.image.url).content
-            print(len(img_bytes))
             await interaction.guild.create_custom_emoji(
                 name=emoji_name, image=img_bytes
             )
