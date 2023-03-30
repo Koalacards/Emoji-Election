@@ -9,13 +9,12 @@ from confidential import SUGGESTION_CHANNEL_ID, LOGS_CHANNEL_ID
 class UtilityCommands(commands.Cog):
     def __init__(self, client: commands.Bot) -> None:
         self.client = client
-        self.logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
-        self.suggestion_channel = self.client.get_channel(SUGGESTION_CHANNEL_ID)
 
     @app_commands.command(name="help")
     async def help(self, interaction: discord.Interaction) -> None:
         """Displays the commands to use Emoji Election!"""
-        await self.logs_channel.send("help command called")
+        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
+        await logs_channel.send("help command called")
         title = "Emoji Election Help Page"
         description = (
             "Thanks for adding Emoji Election to your server! This very simple bot gives you the ability to nominate and vote emojis that should be added to a server!\n\n"
@@ -42,8 +41,10 @@ class UtilityCommands(commands.Cog):
     @app_commands.describe(suggestion="Something to suggest for the Emoji Election devs!")
     async def suggest(self, interaction: discord.Interaction, suggestion: str) -> None:
         """Suggest an improvement or report a bug regarding the Emoji Election bot!"""
-        await self.logs_channel.send("suggest command called")
-        await self.suggestion_channel.send(
+        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
+        await logs_channel.send("suggest command called")
+        suggestion_channel = self.client.get_channel(SUGGESTION_CHANNEL_ID)
+        await suggestion_channel.send(
             embed=create_embed(
                 f"New Suggestion from {interaction.user.name}",
                 suggestion,

@@ -13,7 +13,6 @@ from confidential import LOGS_CHANNEL_ID
 class Nomination(commands.Cog):
     def __init__(self, client: commands.Bot) -> None:
         self.client = client
-        self.logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
 
     @app_commands.command(name="nominate")
     @app_commands.describe(
@@ -27,7 +26,8 @@ class Nomination(commands.Cog):
         name: str,
     ):
         """Nominate an image or gif that should be added to this server!"""
-        await self.logs_channel.send("nominate command called")
+        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
+        await logs_channel.send("nominate command called")
         accepted_content_types = ["image/png", "image/jpeg", "image/gif"]
 
         if attachment.content_type not in accepted_content_types:
