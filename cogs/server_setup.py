@@ -12,6 +12,7 @@ from confidential import LOGS_CHANNEL_ID
 class ServerSetup(commands.Cog):
     def __init__(self, client) -> None:
         self.client = client
+        self.logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
 
     @app_commands.command(name="set-election-channel")
     @app_commands.describe(
@@ -23,8 +24,7 @@ class ServerSetup(commands.Cog):
     ):
         """Set the channel in your server you will have emoji elections in. If this channel is not set, then the preview channel
         will be used and any yes's in the preview channel will be automatically added as emojis."""
-        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
-        await logs_channel.send("set-election-channel command called")
+        await self.logs_channel.send("set-election-channel command called")
         election_channel_id = election_channel.id
         set_election_channel_id(interaction.guild_id, election_channel_id)
         embed = create_embed(
@@ -43,8 +43,7 @@ class ServerSetup(commands.Cog):
         """Set the channel in your server you can preview emojis in and give a yes/no on whether they are appropriate for voting.
         If this channel is not set, all nominated emojis will automatically show up in the emoji election channel.
         """
-        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
-        await logs_channel.send("set-preview-channel command called")
+        await self.logs_channel.send("set-preview-channel command called")
         preview_channel_id = preview_channel.id
         set_preview_channel_id(interaction.guild_id, preview_channel_id)
         embed = create_embed(
@@ -57,8 +56,7 @@ class ServerSetup(commands.Cog):
     @app_commands.default_permissions(manage_guild=True)
     async def ban(self, interaction: discord.Interaction, user: discord.User):
         """Ban a member from nominating emojis in your server."""
-        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
-        await logs_channel.send("ban command called")
+        await self.logs_channel.send("ban command called")
         ban_list = str_to_list(get_banned_list_as_str(interaction.guild_id))
         if user.id in ban_list:
             await send(
@@ -88,8 +86,7 @@ class ServerSetup(commands.Cog):
     @app_commands.default_permissions(manage_guild=True)
     async def unban(self, interaction: discord.Interaction, user: discord.User):
         """Unban a member from nominating emojis in your server."""
-        logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
-        await logs_channel.send("unban command called")
+        await self.logs_channel.send("unban command called")
         ban_list = str_to_list(get_banned_list_as_str(interaction.guild_id))
         if user.id not in ban_list:
             await send(
