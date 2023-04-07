@@ -2,9 +2,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import send, create_embed
+from confidential import LOGS_CHANNEL_ID, SUGGESTION_CHANNEL_ID
+from utils import create_embed, send
 from views import url_view
-from confidential import SUGGESTION_CHANNEL_ID, LOGS_CHANNEL_ID
+
 
 class UtilityCommands(commands.Cog):
     def __init__(self, client: commands.Bot) -> None:
@@ -30,15 +31,12 @@ class UtilityCommands(commands.Cog):
             "Happy electing!"
         )
         color = discord.Color.dark_orange()
-        await send(
-            interaction,
-            create_embed(title, description, color),
-            view=url_view
-        )
-    
+        await send(interaction, create_embed(title, description, color), view=url_view)
 
     @app_commands.command(name="suggest")
-    @app_commands.describe(suggestion="Something to suggest for the Emoji Election devs!")
+    @app_commands.describe(
+        suggestion="Something to suggest for the Emoji Election devs!"
+    )
     async def suggest(self, interaction: discord.Interaction, suggestion: str) -> None:
         """Suggest an improvement or report a bug regarding the Emoji Election bot!"""
         logs_channel = self.client.get_channel(LOGS_CHANNEL_ID)
@@ -48,7 +46,7 @@ class UtilityCommands(commands.Cog):
             embed=create_embed(
                 f"New Suggestion from {interaction.user.name}",
                 suggestion,
-                discord.Color.dark_orange()
+                discord.Color.dark_orange(),
             )
         )
 
@@ -57,13 +55,11 @@ class UtilityCommands(commands.Cog):
             create_embed(
                 "Success!",
                 "Your suggestion or report has been sent to the devs, thank you for supporting Emoji Election!",
-                discord.Color.green()
+                discord.Color.green(),
             ),
             view=url_view,
-            ephemeral=True
+            ephemeral=True,
         )
-
-
 
 
 async def setup(client):

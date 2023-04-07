@@ -2,12 +2,12 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from confidential import LOGS_CHANNEL_ID
 from db.dbfunc import (get_banned_list_as_str, get_election_channel_id,
                        get_preview_channel_id)
 from persistent_views import ElectionView, PreviewView
 from utils import create_embed, send, str_to_list
 from views import url_view
-from confidential import LOGS_CHANNEL_ID
 
 
 class Nomination(commands.Cog):
@@ -32,41 +32,41 @@ class Nomination(commands.Cog):
 
         if attachment.content_type not in accepted_content_types:
             await send(
-                interaction, 
+                interaction,
                 create_embed(
                     "Error",
                     "Your attachment must be either a PNG, JPEG, or GIF file type, as these are the only types that Discord allows for emoji. Please try again with a different file type.",
-                    discord.Color.red()
+                    discord.Color.red(),
                 ),
                 view=url_view,
-                ephemeral=True
+                ephemeral=True,
             )
             return
         elif attachment.content_type == "image/gif" and attachment.size > 2097152:
             await send(
-                interaction, 
+                interaction,
                 create_embed(
                     "Error",
                     "Your GIF attachment exceeds the 2 MB limit for emoji uploads on discord :( Please shrink the size of your GIF and try again.",
-                    discord.Color.red()
+                    discord.Color.red(),
                 ),
                 view=url_view,
-                ephemeral=True
+                ephemeral=True,
             )
             return
         elif attachment.size > 262144:
             await send(
-                interaction, 
+                interaction,
                 create_embed(
                     "Error",
                     "Your PNG or JPEG attachment exceeds the 256 KB limit for picture emoji uploads on discord :( Please shrink your image and try again.",
-                    discord.Color.red()
+                    discord.Color.red(),
                 ),
                 view=url_view,
-                ephemeral=True
+                ephemeral=True,
             )
             return
-        
+
         await nomination_logic(self.client, interaction, attachment.url, name)
 
 

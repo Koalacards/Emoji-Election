@@ -25,7 +25,9 @@ class EmojiElectionClient(commands.Bot):
     async def update_presence(self):
         guild_count = str(len(client.guilds))
         await client.change_presence(
-            activity=discord.Game(name=f"/help in {guild_count} servers! Emoji Responsibly :-)")
+            activity=discord.Game(
+                name=f"/help in {guild_count} servers! Emoji Responsibly :-)"
+            )
         )
 
 

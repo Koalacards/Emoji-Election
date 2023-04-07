@@ -2,11 +2,11 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from confidential import LOGS_CHANNEL_ID
 from db.dbfunc import (get_banned_list_as_str, set_banned_list_str,
                        set_election_channel_id, set_preview_channel_id)
 from utils import create_embed, send, str_to_list
 from views import url_view
-from confidential import LOGS_CHANNEL_ID
 
 
 class ServerSetup(commands.Cog):
